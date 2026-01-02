@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinMind | AI-Powered Business Finance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --dark: #050a18;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 450px; margin: 0 auto; padding: 20px; }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .logo { font-size: 24px; font-weight: 800; color: var(--primary); }
+
+        /* Hero */
+        .hero { text-align: center; padding: 40px 0; }
+        .hero h1 { font-size: 36px; font-weight: 800; line-height: 1.2; margin-bottom: 20px; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { color: #a0aec0; font-size: 16px; margin-bottom: 30px; }
+
+        /* Stats Card (Investorlar uchun) */
+        .stats-grid { display: grid; gap: 15px; margin-bottom: 30px; }
+        .stat-item {
+            background: var(--glass);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        .stat-item h3 { font-size: 28px; color: var(--primary); }
+
+        /* Buttons */
+        .btn {
+            display: block; width: 100%; padding: 18px; border-radius: 15px;
+            text-decoration: none; font-weight: 700; text-align: center;
+            margin-bottom: 15px; cursor: pointer; border: none; font-size: 16px;
+        }
+        .btn-primary { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; }
+        .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; }
+
+        /* Waitlist Section */
+        .waitlist-card {
+            background: rgba(0, 210, 255, 0.05);
+            border: 1px dashed var(--primary);
+            padding: 30px;
+            border-radius: 25px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .progress-bar {
+            height: 10px; background: #1a202c; border-radius: 10px;
+            margin: 20px 0; overflow: hidden;
+        }
+        .progress-fill { width: 35%; height: 100%; background: var(--primary); }
+
+        input {
+            width: 100%; padding: 16px; border-radius: 12px; border: none;
+            margin-bottom: 15px; outline: none; font-size: 16px;
+        }
+
+        /* Chart Section */
+        .chart-container { margin-top: 30px; background: var(--glass); padding: 15px; border-radius: 20px; }
+
+        footer { text-align: center; padding: 40px 0; color: #4a5568; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="logo">FinMind</div>
+        <div style="background: var(--glass); padding: 5px 15px; border-radius: 20px; font-size: 12px;">v1.0 Beta</div>
+    </header>
+
+    <section class="hero">
+        <h1>Biznesingizni <span>AI</span> bilan qutqaring</h1>
+        <p>O'zbekistondagi tadbirkorlar uchun bankrotlik xavfini 40% ga kamaytiruvchi moliyaviy tizim.</p>
+        
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3>60%</h3>
+                <p>Bizneslar 1-yilda yopiladi</p>
+            </div>
+            <div class="stat-item">
+                <h3>500K+</h3>
+                <p>Potensial bozor</p>
+            </div>
+        </div>
+
+        <a href="#" class="btn btn-primary">Platformani sinab ko'rish</a>
+        <a href="#" class="btn btn-outline">📄 Pitch Deck (Investorlar uchun)</a>
+    </section>
+
+    <div class="chart-container">
+        <p style="text-align: center; font-size: 12px; margin-bottom: 10px;">AI Bashorati: Kelgusi 6 oylik o'sish</p>
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <section class="waitlist-card">
+        <h2>Loyiha ishga tushish arafasida</h2>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        <p style="margin-bottom: 20px;"><b>127 ta</b> kompaniya navbatda turibdi</p>
+        
+        <input type="email" id="email" placeholder="Emailingizni yozing">
+        <button class="btn btn-primary" onclick="join()">Ro'yxatga qo'shilish</button>
+    </section>
+
+    <footer>
+        &copy; 2024 FinMind Startup <br> Toshkent, O'zbekiston
+    </footer>
+</div>
+
+<script>
+    // Chart.js - Investorlarga demo ko'rsatish uchun
+    const ctx = document.getElementById('myChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Yan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'O\'sish bashorati',
+                data: [12, 19, 15, 25, 32, 45],
+                borderColor: '#00d2ff',
+                tension: 0.4,
+                fill: true,
+                backgroundColor: 'rgba(0, 210, 255, 0.1)'
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { display: false }, x: { grid: { display: false } } }
+        }
+    });
+
+    function join() {
+        const mail = document.getElementById('email').value;
+        if(mail.includes('@')) {
+            alert("Tabriklaymiz! Siz FinMind hamjamiyatiga qo'shildingiz. Tez orada Pitch Deck va Demo ma'lumotlarini yuboramiz.");
+        } else {
+            alert("Iltimos, to'g'ri email kiriting.");
+        }
+    }
+</script>
+
+</body>
+</html>
