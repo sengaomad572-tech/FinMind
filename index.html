@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinMind AI Panel | Professional Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #050a18; --card: #0f172a; --accent: #00d2ff;
+            --success: #00ff88; --danger: #ff4d4d; --text: #f8fafc;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 450px; margin: 0 auto; }
+
+        /* Kiritish Formasi - Professional interfeys */
+        .input-section {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px; padding: 20px; margin-bottom: 25px;
+        }
+        .input-group { margin-bottom: 15px; }
+        label { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 5px; text-transform: uppercase; }
+        input { 
+            width: 100%; background: #1e293b; border: 1px solid #334155; 
+            padding: 12px; border-radius: 12px; color: white; font-weight: 700; outline: none;
+        }
+        button.update-btn {
+            width: 100%; background: var(--accent); color: var(--bg); border: none;
+            padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer;
+        }
+
+        /* Dashboard elementlari (Skrinshotdagi kabi) */
+        .card { background: var(--card); border-radius: 24px; padding: 25px; margin-bottom: 15px; }
+        .balance-title { font-size: 12px; color: #94a3b8; margin-bottom: 10px; }
+        .amount { font-size: 36px; font-weight: 800; color: var(--accent); }
+        .health-badge { 
+            display: inline-block; margin-top: 15px; padding: 6px 12px; 
+            border-radius: 20px; font-size: 11px; background: rgba(0, 255, 136, 0.1); color: var(--success); 
+        }
+
+        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .stat-card { background: var(--card); padding: 20px; border-radius: 20px; }
+        .stat-val { font-size: 20px; font-weight: 700; margin-top: 5px; }
+
+        .ai-box { 
+            border: 1px dashed var(--accent); background: rgba(0, 210, 255, 0.02);
+            padding: 20px; border-radius: 20px; font-size: 13px; line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="input-section">
+        <label>Ma'lumotlarni yangilash</label>
+        <div class="stats" style="margin-bottom: 15px;">
+            <div class="input-group">
+                <label>Daromad ($)</label>
+                <input type="number" id="inRev" value="12400">
+            </div>
+            <div class="input-group">
+                <label>Xarajat ($)</label>
+                <input type="number" id="inExp" value="5200">
+            </div>
+        </div>
+        <button class="update-btn" onclick="calculateFinMind()">HISOB-KITOBNI BOSHLASH</button>
+    </div>
+
+    <div class="card">
+        <p class="balance-title">UMUMIY BALANS (FORECAST)</p>
+        <p class="amount" id="totalBal">$45,200.00</p>
+        <div class="health-badge" id="healthTag">AI: Xavf darajasi Past (88%)</div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <label>DAROMAD</label>
+            <p class="stat-val" style="color: var(--success);" id="dispRev">+$12,400</p>
+        </div>
+        <div class="stat-card">
+            <label>XARAJAT</label>
+            <p class="stat-val" style="color: var(--danger);" id="dispExp">-$5,200</p>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 15px;">
+        <canvas id="liveChart"></canvas>
+    </div>
+
+    <div class="ai-box" id="aiCFO">
+        🤖 <b>AI CFO:</b> Ma'lumotlar tahlil qilinmoqda...
+    </div>
+</div>
+
+<script>
+    let myChart;
+    
+    // Grafikni yaratish
+    const ctx = document.getElementById('liveChart').getContext('2d');
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sha', 'Yak'],
+            datasets: [{
+                data: [38000, 40000, 39000, 42000, 41000, 45200, 45200],
+                borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.1)',
+                fill: true, tension: 0.4, pointRadius: 0
+            }]
+        },
+        options: { plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { display: false } } }
+    });
+
+    function calculateFinMind() {
+        const rev = parseFloat(document.getElementById('inRev').value);
+        const exp = parseFloat(document.getElementById('inExp').value);
+        
+        // Dinamik hisoblar
+        const balance = (rev - exp) + 38000; // Bazaviy kassa + sof foyda
+        const health = Math.round((rev / (exp * 1.5)) * 50); // Sog'liq balini hisoblash mantiqi
+        
+        // Ekranni yangilash
+        document.getElementById('totalBal').innerText = '$' + balance.toLocaleString();
+        document.getElementById('dispRev').innerText = '+$' + rev.toLocaleString();
+        document.getElementById('dispExp').innerText = '-$' + exp.toLocaleString();
+        
+        const aiBox = document.getElementById('aiCFO');
+        if(rev > exp * 2) {
+            document.getElementById('healthTag').innerText = `AI: Xavf darajasi Juda Past (${health > 100 ? 98 : health}%)`;
+            aiBox.innerHTML = `🤖 <b>AI CFO:</b> Foyda juda yuqori! Reklamaga ko'proq pul tikish vaqti keldi.`;
+        } else {
+            document.getElementById('healthTag').innerText = `AI: Xavf darajasi O'rtacha (${health}%)`;
+            aiBox.innerHTML = `🤖 <b>AI CFO:</b> Diqqat! Xarajatlar daromadga yaqinlashmoqda. Burn Rate'ni nazorat qiling.`;
+        }
+
+        // Grafikni yangilash
+        myChart.data.datasets[0].data = [35000, 37000, 36000, rev, exp, balance - 2000, balance];
+        myChart.update();
+    }
+</script>
+</body>
+</html>
