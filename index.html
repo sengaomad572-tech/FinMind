@@ -1,0 +1,77 @@
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
+    
+    <div class="lg:col-span-1 space-y-4">
+        <div id="company-card" class="glass-card p-5 border-t-4 border-blue-500">
+            <div id="loader" class="animate-pulse text-slate-500 text-xs uppercase font-bold">Ma'lumotlar yuklanmoqda...</div>
+            <div id="company-content" class="hidden">
+                <h2 id="comp-name" class="text-2xl font-black text-white leading-tight"></h2>
+                <p id="comp-sector" class="text-blue-500 text-[10px] font-bold uppercase tracking-widest mt-1"></p>
+                <div class="mt-4 p-3 bg-white/5 rounded-xl border border-white/5">
+                    <p id="comp-desc" class="text-[11px] text-slate-400 leading-relaxed"></p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2 mt-4">
+                    <div class="bg-black/20 p-2 rounded-lg border border-white/5">
+                        <p class="text-[8px] text-slate-500 uppercase font-bold">Bozor qiymati</p>
+                        <p id="comp-cap" class="text-xs font-bold text-white"></p>
+                    </div>
+                    <div class="bg-black/20 p-2 rounded-lg border border-white/5">
+                        <p class="text-[8px] text-slate-500 uppercase font-bold">P/E Nisbati</p>
+                        <p id="comp-pe" class="text-xs font-bold text-white"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lg:col-span-3">
+        <div class="glass-card overflow-hidden" style="height: 65vh;">
+            <div id="tv_widget" class="h-full w-full"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Har bir ticker uchun ma'lumotlar bazasi
+const marketData = {
+    "TSLA": { name: "Tesla, Inc.", sector: "Automotive / Energy", cap: "780.5B", pe: "45.2", desc: "Elon Musk boshchiligidagi dunyodagi eng yirik elektromobil ishlab chiqaruvchisi." },
+    "AAPL": { name: "Apple Inc.", sector: "Consumer Electronics", cap: "3.2T", pe: "30.8", desc: "Dunyoning eng qimmat brendi, iPhone va Mac kompyuterlari yaratuvchisi." },
+    "NVDA": { name: "NVIDIA Corp.", sector: "Semiconductors / AI", cap: "2.8T", pe: "72.4", desc: "Sun'iy intellekt inqilobining asosiy harakatlantiruvchisi, GPU chiplari giganti." },
+    "BTCUSD": { name: "Bitcoin / USDT", sector: "Cryptocurrency", cap: "1.8T", pe: "N/A", desc: "Markazlashmagan raqamli valyuta, raqamli oltin sifatida tan olingan." }
+};
+
+function updateTerminal() {
+    const symbol = document.getElementById('marketSearch').value.toUpperCase().trim() || 'NVDA';
+    
+    // 1. Grafikni yuklash
+    new TradingView.widget({
+        "autosize": true,
+        "symbol": symbol,
+        "interval": "D",
+        "timezone": "Etc/UTC",
+        "theme": "dark",
+        "style": "1",
+        "locale": "en",
+        "container_id": "tv_widget"
+    });
+
+    // 2. UI Ma'lumotlarini yangilash
+    const loader = document.getElementById('loader');
+    const content = document.getElementById('company-content');
+    const data = marketData[symbol] || { name: symbol, sector: "Global Asset", cap: "---", pe: "---", desc: "Bu aktiv bo'yicha tahlil neyron tarmoq tomonidan amalga oshirilmoqda..." };
+
+    loader.style.display = 'block';
+    content.classList.add('hidden');
+
+    setTimeout(() => {
+        document.getElementById('comp-name').innerText = data.name;
+        document.getElementById('comp-sector').innerText = data.sector;
+        document.getElementById('comp-desc').innerText = data.bio || data.desc;
+        document.getElementById('comp-cap').innerText = data.cap;
+        document.getElementById('comp-pe').innerText = data.pe;
+
+        loader.style.display = 'none';
+        content.classList.remove('hidden');
+    }, 800);
+}
+</script>
