@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinMind Professional AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #050a18; --card: #0f172a; --accent: #00d2ff; --text: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 400px; }
+
+        /* Kiritish Formasi */
+        .form-card { background: var(--card); border-radius: 24px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+        .form-title { color: var(--accent); font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 10px; color: #94a3b8; text-transform: uppercase; margin-bottom: 5px; font-weight: 700; }
+        .input-field { width: 100%; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; color: white; font-weight: 700; outline: none; }
+        .input-field:focus { border-color: var(--accent); }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        /* Dashboard qismlari */
+        .main-card { background: var(--card); border-radius: 24px; padding: 25px; margin-bottom: 15px; position: relative; overflow: hidden; }
+        .balance-val { font-size: 32px; font-weight: 800; color: var(--accent); margin: 10px 0; }
+        .status-badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 11px; background: rgba(0, 210, 255, 0.1); color: var(--accent); }
+        
+        .btn-calc { width: 100%; background: linear-gradient(90deg, #00d2ff, #3a86ff); border: none; padding: 18px; border-radius: 15px; color: white; font-weight: 800; cursor: pointer; margin-top: 10px; box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2); }
+        
+        .ai-box { border: 1px dashed var(--accent); padding: 15px; border-radius: 15px; font-size: 13px; line-height: 1.5; background: rgba(0, 210, 255, 0.02); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="form-card">
+        <div class="form-title">Moliyaviy Ma'lumotlar</div>
+        <div class="input-group">
+            <label>Jami Daromad ($)</label>
+            <input type="number" id="input_rev" class="input-field" value="12000">
+        </div>
+        <div class="input-group">
+            <label>Mavjud Zaxira ($)</label>
+            <input type="number" id="input_cash" class="input-field" value="38000">
+        </div>
+        <div class="row">
+            <div class="input-group">
+                <label>Marketing ($)</label>
+                <input type="number" id="input_mark" class="input-field" value="1500">
+            </div>
+            <div class="input-group">
+                <label>Ish haqi ($)</label>
+                <input type="number" id="input_salary" class="input-field" value="3000">
+            </div>
+        </div>
+        <button class="btn-calc" onclick="runAIAnalysis()">HISOB-KITOBNI BOSHLASH</button>
+    </div>
+
+    <div class="main-card">
+        <label>UMUMIY BALANS (FORECAST)</label>
+        <div class="balance-val" id="display_total">$45,200.00</div>
+        <div class="status-badge" id="display_status">AI: Xavf darajasi Past (88%)</div>
+    </div>
+
+    <div class="main-card">
+        <canvas id="miniChart" height="150"></canvas>
+    </div>
+
+    <div class="ai-box" id="display_ai">
+        🤖 <b>AI CFO:</b> Ma'lumotlarni kiriting va tugmani bosing.
+    </div>
+</div>
+
+<script>
+    // Grafikni boshlang'ich sozlash
+    let ctx = document.getElementById('miniChart').getContext('2d');
+    let myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sha', 'Yak'],
+            datasets: [{
+                data: [38000, 40000, 39000, 42000, 41000, 43000, 45200],
+                borderColor: '#00d2ff',
+                borderWidth: 3,
+                tension: 0.4,
+                pointRadius: 0,
+                fill: true,
+                backgroundColor: 'rgba(0, 210, 255, 0.05)'
+            }]
+        },
+        options: { plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
+  
