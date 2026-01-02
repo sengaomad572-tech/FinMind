@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinMind | Investor Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --primary: #00d2ff; --secondary: #3a7bd5; --dark: #050a18; --glass: rgba(255, 255, 255, 0.05); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark); color: white; overflow-x: hidden; }
+        .page { display: none; padding: 20px; width: 100%; max-width: 480px; margin: 0 auto; }
+        .active { display: flex; flex-direction: column; gap: 20px; }
+        
+        /* Landing Page Styles */
+        .hero { text-align: center; padding: 40px 0; }
+        .hero h1 { font-size: 34px; font-weight: 800; margin-bottom: 15px; }
+        .hero h1 span { color: var(--primary); }
+        .btn { display: block; width: 100%; padding: 18px; border-radius: 16px; text-decoration: none; font-weight: 700; text-align: center; font-size: 16px; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; }
+        input { width: 100%; padding: 18px; border-radius: 14px; border: 1px solid #2d3748; margin-bottom: 15px; font-size: 16px; outline: none; }
+        
+        /* Dashboard Styles */
+        .db-card { background: var(--glass); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .db-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .db-stat { text-align: center; }
+        .db-stat h4 { font-size: 22px; color: var(--primary); }
+        .status-badge { background: rgba(0, 255, 136, 0.1); color: #00ff88; padding: 5px 10px; border-radius: 10px; font-size: 12px; display: inline-block; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <div id="landingPage" class="page active">
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 24px; font-weight: 800; color: var(--primary);">FinMind</div>
+            <div style="font-size: 12px; color: #718096;">Pre-Seed v1.1</div>
+        </header>
+
+        <section class="hero">
+            <h1>Biznesni <span>AI</span> bilan qutqaring</h1>
+            <p style="color: #a0aec0; margin-bottom: 25px;">Moliyaviy bankrotlik xavfini 40% ga kamaytiruvchi aqlli ekotizim.</p>
+            
+            <div style="background: var(--glass); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px;">
+                <h3 style="color: var(--primary);">127 ta</h3>
+                <p style="font-size: 12px; color: #cbd5e0;">Kompaniyalar navbatda</p>
+            </div>
+
+            <input type="email" id="emailInput" placeholder="Emailingizni yozing">
+            <button class="btn btn-primary" onclick="goToDashboard()">Platformaga kirish</button>
+            <p style="font-size: 11px; color: #4a5568; margin-top: 10px;">Ro'yxatdan o'tish orqali siz demo versiyaga kirasiz</p>
+        </section>
+    </div>
+
+    <div id="dashboardPage" class="page">
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 20px; font-weight: 800; color: var(--primary);">FinMind Panel</div>
+            <button onclick="location.reload()" style="background:none; border:none; color:#718096; font-size:12px;">Chiqish</button>
+        </header>
+
+        <div class="db-card">
+            <p style="font-size: 12px; color: #a0aec0;">Umumiy Balans (Bashorat)</p>
+            <h2 style="font-size: 32px; margin: 10px 0;">$45,200.00</h2>
+            <div class="status-badge">AI: Xavf darajasi Past</div>
+        </div>
+
+        <div class="db-grid">
+            <div class="db-card db-stat">
+                <p style="font-size: 11px;">Daromad</p>
+                <h4>+24%</h4>
+            </div>
+            <div class="db-card db-stat">
+                <p style="font-size: 11px;">Xarajat</p>
+                <h4 style="color: #ff4d4d;">-12%</h4>
+            </div>
+        </div>
+
+        <div class="db-card">
+            <h4 style="font-size: 14px; margin-bottom: 15px; text-align: center; color: #a0aec0;">Moliyaviy O'sish Grafikasi</h4>
+            <canvas id="dashboardChart"></canvas>
+        </div>
+
+        <div class="db-card" style="border-style: dashed; border-color: var(--primary);">
+            <p style="font-size: 13px; text-align: center;"><b>AI Maslahati:</b> Keyingi oyda reklama xarajatlarini 10% ga oshirish tavsiya etiladi.</p>
+        </div>
+
+        <footer style="text-align: center; padding: 20px; color: #4a5568; font-size: 11px;">
+            Haqiqiy ma'lumotlar bilan ishlash uchun pro-versiyaga o'ting.
+        </footer>
+    </div>
+
+    <script>
+        function goToDashboard() {
+            const email = document.getElementById('emailInput').value;
+            if (email.includes('@')) {
+                // Landing sahifasini yashirish va Dashboardni ko'rsatish
+                document.getElementById('landingPage').classList.remove('active');
+                document.getElementById('dashboardPage').classList.add('active');
+                
+                // Grafikni yuklash
+                initChart();
+            } else {
+                alert("Iltimos, email manzilingizni kiriting.");
+            }
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('dashboardChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan'],
+                    datasets: [{
+                        label: 'Foyda',
+                        data: [1200, 1900, 1500, 2500, 3200, 4100],
+                        borderColor: '#00d2ff',
+                        backgroundColor: 'rgba(0, 210, 255, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#718096' } } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
