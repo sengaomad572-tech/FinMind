@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinMind AI | Enterprise Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #01040a; color: #f0f6fc; overflow-x: hidden; }
+        .terminal-card { background: rgba(13, 17, 23, 0.8); border: 1px solid #30363d; border-radius: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .terminal-card:hover { border-color: #388bfd; box-shadow: 0 0 20px rgba(56, 139, 253, 0.15); transform: translateY(-4px); }
+        .glow-text { text-shadow: 0 0 10px rgba(56, 139, 253, 0.5); }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <nav class="border-b border-[#30363d] bg-[#0d1117]/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="bg-[#388bfd] p-1.5 rounded-lg shadow-lg shadow-blue-500/20">
+                <i data-lucide="activity" class="text-white w-5 h-5"></i>
+            </div>
+            <span class="text-xl font-extrabold tracking-tighter uppercase glow-text">FinMind <span class="text-[#388bfd]">Intelligence</span></span>
+        </div>
+        <div class="hidden lg:flex gap-8 text-[10px] font-bold tracking-widest text-[#8b949e]">
+            <a href="#" class="text-[#388bfd]">STOCKS</a>
+            <a href="#" class="hover:text-white transition">CRYPTO HUB</a>
+            <a href="#" class="hover:text-white transition">NEURAL FLOW</a>
+        </div>
+        <button class="bg-[#238636] hover:bg-[#2ea043] px-5 py-2 rounded-full font-bold text-xs transition-all active:scale-95">LOG IN</button>
+    </nav>
+
+    <main class="max-w-5xl mx-auto p-6">
+        <header class="py-12 text-center">
+            <h1 class="text-4xl md:text-6xl font-black mb-6 tracking-tight">Institutional <span class="text-[#388bfd]">Insight.</span></h1>
+            <div class="max-w-xl mx-auto relative mt-10">
+                <input id="tickerInput" type="text" class="w-full bg-[#0d1117] border border-[#30363d] p-5 rounded-2xl outline-none focus:border-[#388bfd] transition-all text-lg font-bold placeholder:text-[#484f58]" placeholder="Search Ticker (e.g. NVDA, AAPL, BTC)...">
+                <button onclick="performAnalysis()" class="absolute right-3 top-2.5 bottom-2.5 bg-[#388bfd] hover:bg-[#1f6feb] px-6 rounded-xl font-bold flex items-center gap-2 transition-all">
+                    Analyze <i data-lucide="search" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </header>
+
+        <div id="resultsGrid" class="grid md:grid-cols-2 gap-6 pb-20">
+            </div>
+    </main>
+
+    <div id="loadingOverlay" class="fixed inset-0 bg-[#01040a]/90 z-[100] hidden flex-col items-center justify-center backdrop-blur-sm">
+        <div class="w-16 h-16 border-4 border-[#388bfd] border-t-transparent rounded-full animate-spin mb-6"></div>
+        <p id="loadingStatus" class="font-mono text-[10px] tracking-[0.3em] uppercase text-[#8b949e]">Accessing Order Books...</p>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Database of assets (Startup logic)
+        const assetDatabase = [
+            { t: "NVDA", n: "NVIDIA Corporation", p: 875.20, c: 4.25, s: 98, i: "Institutional Accumulation Detected" },
+            { t: "AAPL", n: "Apple Inc.", p: 172.45, c: -0.15, s: 84, i: "Stable Insider Holding" },
+            { t: "TSLA", n: "Tesla, Inc.", p: 163.50, c: -2.30, s: 61, i: "High Retail Volatility Alert" }
+        ];
+
+        function renderUI(items) {
+            const grid = document.getElementById('resultsGrid');
+            grid.innerHTML = items.map(asset => `
+                <div class="terminal-card p-8 group">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h3 class="text-3xl font-black tracking-tighter">${asset.t}</h3>
+                            <p class="text-[#8b949e] text-[10px] font-bold uppercase tracking-widest">${asset.n}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[9px] font-black text-[#388bfd] mb-1">AI SCORE</p>
+                            <p class="text-xl font-black">${asset.s}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-baseline gap-3 mb-8">
+                        <span class="text-4xl font-bold font-mono tracking-tighter">$${asset.p.toFixed(2)}</span>
+                        <span class="text-sm font-black ${asset.c >= 0 ? 'text-[#3fb950]' : 'text-[#f85149]'}">
+                            ${asset.c >= 0 ? '+' : ''}${asset.c}%
+                        </span>
+                    </div>
+                    <div class="pt-6 border-t border-[#30363d]">
+                        <p class="text-[9px] text-[#8b949e] font-bold uppercase mb-2">Neural Insight</p>
+                        <p class="text-sm font-semibold text-[#c9d1d9]">"${asset.i}"</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function performAnalysis() {
+            const query = document.getElementById('tickerInput').value.toUpperCase();
+            if(!query) return;
+
+            const overlay = document.getElementById('loadingOverlay');
+            const status = document.getElementById('loadingStatus');
+            overlay.classList.remove('hidden');
+
+            // Simulated AI processing stages
+            const stages = ["Scraping Dark Pools...", "Auditing Financials...", "Mapping Whale Wallets...", "Finalizing AI Score..."];
+            for (let step of stages) {
+                status.innerText = step;
+                await new Promise(r => setTimeout(r, 600));
+            }
+
+            // Logic: If in database show, else generate mock data
+            const existing = assetDatabase.find(a => a.t === query);
+            if(!existing) {
+                assetDatabase.unshift({
+                    t: query,
+                    n: "Global Equity Asset",
+                    p: Math.random() * 400 + 10,
+                    c: (Math.random() * 8 - 4).toFixed(2),
+                    s: Math.floor(Math.random() * 50 + 45),
+                    i: "New Asset Neural Scan Complete"
+                });
+            } else {
+                // Move existing to top
+                const index = assetDatabase.indexOf(existing);
+                assetDatabase.splice(index, 1);
+                assetDatabase.unshift(existing);
+            }
+
+            overlay.classList.add('hidden');
+            renderUI(assetDatabase);
+            document.getElementById('tickerInput').value = '';
+        }
+
+        // Initial Load
+        renderUI(assetDatabase);
+    </script>
+</body>
+</html>
