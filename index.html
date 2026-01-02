@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Alpha AI Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        body { background-color: #02040a; color: #e2e8f0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card { background: #0d1117; border: 1px solid #30363d; border-radius: 20px; }
+        #tv_widget { min-height: 500px; height: 70vh !important; }
+        .ai-glow { box-shadow: 0 0 15px rgba(56, 139, 253, 0.2); border: 1px solid #388bfd !important; }
+    </style>
+</head>
+<body class="p-0 m-0">
+
+    <nav class="border-b border-slate-800 bg-[#0d1117] p-4 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-600 p-1 rounded-lg"><i data-lucide="layout-dashboard" class="text-white w-5 h-5"></i></div>
+            <span class="font-black text-xl tracking-tighter uppercase">Alpha <span class="text-blue-500">Mind</span></span>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="showSection('stocks')" id="btn-stocks" class="text-blue-500 font-bold text-xs border-b-2 border-blue-500 pb-1">STOCKS</button>
+            <button onclick="showSection('crypto')" id="btn-crypto" class="text-slate-500 font-bold text-xs hover:text-white">CRYPTO</button>
+        </div>
+    </nav>
+
+    <div class="w-full h-[40px] border-b border-slate-800 bg-[#02040a]">
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            { "symbols": [
+                {"proName": "BITSTAMP:BTCUSD", "title": "BTC"},
+                {"proName": "NASDAQ:NVDA", "title": "NVDA"},
+                {"proName": "NASDAQ:TSLA", "title": "TSLA"},
+                {"proName": "NASDAQ:AAPL", "title": "AAPL"}
+            ], "colorTheme": "dark", "isTransparent": true, "displayMode": "adaptive", "locale": "en" }
+            </script>
+        </div>
+    </div>
+
+    <main class="p-4 space-y-4 max-w-7xl mx-auto">
+        
+        <div id="ai-panel" class="glass-card ai-glow p-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="animate-pulse bg-green-500 w-3 h-3 rounded-full"></div>
+                <div>
+                    <h2 id="current-asset" class="text-lg font-black uppercase tracking-tighter text-white">NVDA Analysis</h2>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Neural Signal Status</p>
+                </div>
+            </div>
+            <div class="flex gap-6">
+                <div class="text-center">
+                    <p class="text-[9px] text-slate-500 font-bold">AI SCORE</p>
+                    <p id="ai-score" class="text-2xl font-black text-blue-500">92/100</p>
+                </div>
+                <div class="text-center border-l border-slate-800 pl-6">
+                    <p class="text-[9px] text-slate-500 font-bold">RECOMMENDATION</p>
+                    <p id="ai-rec" class="text-2xl font-black text-green-500">STRONG BUY</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="section-stocks" class="space-y-4">
+            <div class="glass-card p-2 flex items-center shadow-xl">
+                <input type="text" id="sym" placeholder="ENTER TICKER (E.G. TSLA)" 
+                       class="bg-transparent flex-1 p-3 outline-none font-bold uppercase text-blue-400 text-sm">
+                <button onclick="search()" class="bg-blue-600 px-6 py-3 rounded-xl font-black uppercase text-[10px] active:scale-95 transition">Analyze</button>
+            </div>
+            <div class="glass-card overflow-hidden shadow-2xl">
+                <div id="tv_widget"></div>
+            </div>
+        </div>
+
+        <div id="section-crypto" class="hidden space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-card p-6 text-center">
+                    <h3 class="text-slate-500 font-bold text-xs uppercase mb-2">BTC/USD</h3>
+                    <p class="text-3xl font-black">$96,432</p>
+                    <span class="text-green-500 text-xs font-bold">+2.4%</span>
+                </div>
+                <div class="glass-card p-6 text-center border-orange-500/30">
+                    <h3 class="text-slate-500 font-bold text-xs uppercase mb-2">Fear & Greed</h3>
+                    <p class="text-3xl font-black text-orange-500">78</p>
+                    <span class="text-orange-500 text-xs font-bold uppercase">Extreme Greed</span>
+                </div>
+                <div class="glass-card p-6 text-center">
+                    <h3 class="text-slate-500 font-bold text-xs uppercase mb-2">Dominance</h3>
+                    <p class="text-3xl font-black">56.2%</p>
+                    <span class="text-blue-500 text-xs font-bold">Bitcoin</span>
+                </div>
+            </div>
+            <div class="glass-card overflow-hidden h-[500px]">
+                <div id="crypto_widget" class="h-full"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        lucide.createIcons();
+
+        function loadChart(s, container) {
+            new TradingView.widget({
+                "width": "100%", "height": "100%", "symbol": s,
+                "interval": "D", "timezone": "Etc/UTC", "theme": "dark",
+                "style": "1", "locale": "en", "container_id": container
+            });
+            document.getElementById('current-asset').innerText = s + " ANALYSIS";
+            // AI scoreni simulyatsiya qilish
+            document.getElementById('ai-score').innerText = Math.floor(Math.random() * 40 + 60) + "/100";
+        }
+
+        function search() {
+            const s = document.getElementById('sym').value.toUpperCase().trim();
+            if(s) loadChart(s, 'tv_widget');
+        }
+
+        function showSection(type) {
+            if(type === 'stocks') {
+                document.getElementById('section-stocks').classList.remove('hidden');
+                document.getElementById('section-crypto').classList.add('hidden');
+                document.getElementById('btn-stocks').className = "text-blue-500 font-bold text-xs border-b-2 border-blue-500 pb-1";
+                document.getElementById('btn-crypto').className = "text-slate-500 font-bold text-xs hover:text-white";
+            } else {
+                document.getElementById('section-stocks').classList.add('hidden');
+                document.getElementById('section-crypto').classList.remove('hidden');
+                document.getElementById('btn-crypto').className = "text-blue-500 font-bold text-xs border-b-2 border-blue-500 pb-1";
+                document.getElementById('btn-stocks').className = "text-slate-500 font-bold text-xs hover:text-white";
+                loadChart('BINANCE:BTCUSDT', 'crypto_widget');
+            }
+        }
+
+        window.onload = () => loadChart('NVDA', 'tv_widget');
+    </script>
+</body>
+</html>
