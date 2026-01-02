@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --bg: #020817;
+            --card: #0f172a;
+            --accent: #00d2ff;
+            --input-bg: #1e293b;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .input-panel {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card);
+            border-radius: 28px;
+            padding: 30px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        h2 { font-size: 18px; margin-bottom: 25px; color: var(--accent); text-align: center; letter-spacing: 1px; }
+
+        .form-group { margin-bottom: 20px; }
+
+        label { 
+            display: block; 
+            font-size: 11px; 
+            color: #94a3b8; 
+            margin-bottom: 8px; 
+            text-transform: uppercase; 
+            font-weight: 600;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper span {
+            position: absolute;
+            left: 15px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            padding: 14px 14px 14px 35px;
+            border-radius: 16px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            background: linear-gradient(90deg, #00d2ff, #3a86ff);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 18px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 10px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 20px rgba(0, 210, 255, 0.3);
+        }
+
+        .calculate-btn:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+<div class="input-panel">
+    <h2>Moliyaviy Ma'lumotlar</h2>
+    
+    <div class="form-group">
+        <label>Jami Daromad</label>
+        <div class="input-wrapper">
+            <span>$</span>
+            <input type="number" id="rev" placeholder="0.00" value="12000">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Mavjud Zaxira (Cash)</label>
+        <div class="input-wrapper">
+            <span>$</span>
+            <input type="number" id="cash" placeholder="0.00" value="38000">
+        </div>
+    </div>
+
+    <div class="grid-inputs">
+        <div class="form-group">
+            <label>Marketing</label>
+            <div class="input-wrapper">
+                <span>$</span>
+                <input type="number" id="mark" value="1500">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Ish haqi</label>
+            <div class="input-wrapper">
+                <span>$</span>
+                <input type="number" id="salary" value="3000">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Boshqa xarajatlar</label>
+        <div class="input-wrapper">
+            <span>$</span>
+            <input type="number" id="other" value="1240">
+        </div>
+    </div>
+
+    <button class="calculate-btn">Hisob-kitobni boshlash</button>
+</div>
+
+</body>
+              </html>
+  
