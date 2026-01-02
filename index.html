@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinMind | AI Financial Startup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --dark: #050a18;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: white;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px; /* Mobil uchun optimal */
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Logo & Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .logo { font-size: 24px; font-weight: 800; color: var(--primary); }
+        .version { background: var(--glass); padding: 5px 12px; border-radius: 20px; font-size: 11px; color: #a0aec0; }
+
+        /* Hero Section */
+        .hero { text-align: center; padding: 20px 0; }
+        .hero h1 { font-size: 34px; font-weight: 800; line-height: 1.2; margin-bottom: 15px; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { color: #a0aec0; font-size: 15px; margin-bottom: 25px; }
+
+        /* Investor Stats Card */
+        .stats-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .stat-box {
+            background: var(--glass);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        .stat-box h3 { font-size: 26px; color: var(--primary); margin-bottom: 5px; }
+        .stat-box p { font-size: 12px; color: #cbd5e0; }
+
+        /* Action Buttons */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            text-align: center;
+            font-size: 16px;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 4px 20px rgba(0, 210, 255, 0.3); }
+        .btn-outline { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; margin-top: 10px; }
+
+        /* AI Prediction Demo */
+        .demo-box {
+            background: var(--glass);
+            padding: 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .demo-box h4 { font-size: 14px; text-align: center; margin-bottom: 15px; color: #a0aec0; }
+
+        /* Waitlist Section */
+        .waitlist {
+            background: rgba(0, 210, 255, 0.03);
+            border: 1px dashed var(--primary);
+            padding: 30px 20px;
+            border-radius: 25px;
+            text-align: center;
+        }
+        .progress-container { background: #1a202c; height: 8px; border-radius: 10px; margin: 20px 0; overflow: hidden; }
+        .progress-bar { width: 35%; height: 100%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+
+        input {
+            width: 100%;
+            padding: 18px;
+            border-radius: 14px;
+            border: 1px solid #2d3748;
+            background: #ffffff;
+            color: #000;
+            font-size: 16px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        footer { text-align: center; padding: 20px; color: #4a5568; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <div class="logo">FinMind</div>
+            <div class="version">Pre-Seed v1.0</div>
+        </header>
+
+        <section class="hero">
+            <h1>Biznesingizni <span>AI</span> bilan qutqaring</h1>
+            <p>O'zbekistondagi tadbirkorlar uchun moliyaviy bankrotlik xavfini 40% ga kamaytiruvchi aqlli ekotizim.</p>
+            
+            <div class="stats-card">
+                <div class="stat-box">
+                    <h3>60%</h3>
+                    <p>Yopilish xavfi</p>
+                </div>
+                <div class="stat-box">
+                    <h3>500K+</h3>
+                    <p>Tadbirkorlar</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <a href="#" class="btn btn-primary">Platformaga kirish</a>
+            <a href="#" class="btn btn-outline">▶ Pitch Deck (PDF)</a>
+        </section>
+
+        <section class="demo-box">
+            <h4>AI Bashorati: Kelgusi 6 oylik o'sish</h4>
+            <canvas id="financeChart"></canvas>
+        </section>
+
+        <section class="waitlist">
+            <h2 style="font-size: 18px;">Loyiha ishga tushish arafasida</h2>
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            <p style="font-size: 14px; font-weight: 600; margin-bottom: 20px;">127 ta kompaniya navbatda</p>
+            
+            <input type="email" id="emailInput" placeholder="Emailingizni yozing">
+            <button class="btn btn-primary" onclick="joinWaitlist()">Kutish ro'yxatiga qo'shilish</button>
+        </section>
+
+        <footer>
+            &copy; 2024 FinMind Startup. Tashkent, UZ. <br> Powered by AI Financial Models
+        </footer>
+    </div>
+
+    <script>
+        // Real-time Chart for Investors
+        const ctx = document.getElementById('financeChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Yan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Foyda bashorati',
+                    data: [10, 15, 12, 25, 30, 48],
+                    borderColor: '#00d2ff',
+                    backgroundColor: 'rgba(0, 210, 255, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { display: false },
+                    x: { grid: { display: false }, ticks: { color: '#718096' } }
+                }
+            }
+        });
+
+        function joinWaitlist() {
+            const email = document.getElementById('emailInput').value;
+            if (email.includes('@')) {
+                alert("Tabriklaymiz! Siz muvaffaqiyatli ro'yxatdan o'tdingiz. Tez orada Pitch Deck ma'lumotlarini yuboramiz.");
+            } else {
+                alert("Iltimos, haqiqiy email manzilingizni kiriting.");
+            }
+        }
+    </script>
+</body>
+</html>
