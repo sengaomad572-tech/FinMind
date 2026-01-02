@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinMind AI | Institutional Grade Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617;
+            color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .crypto-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%);
+        }
+        .neon-border:focus {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <nav class="border-b border-slate-800 p-4 glass-card sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i data-lucide="cpu" class="text-blue-500"></i>
+                <span class="text-xl font-bold tracking-tighter">FINMIND <span class="text-blue-500">AI</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
+                <a href="#" class="hover:text-blue-400 transition">Market</a>
+                <a href="#" class="hover:text-blue-400 transition">AI Analysis</a>
+                <a href="#" class="hover:text-blue-400 transition">Demo Trading</a>
+                <a href="#" class="hover:text-blue-400 transition">Academy</a>
+            </div>
+            <button class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-full text-sm font-semibold transition">Connect Wallet</button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6">
+        
+        <section class="py-12 text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+                Analyze Assets with <br>
+                <span class="text-transparent bg-clip-text crypto-gradient">Neural Intelligence.</span>
+            </h1>
+            <p class="text-slate-400 max-w-2xl mx-auto mb-10 text-lg">
+                High-frequency data processing, AI-driven sentiment analysis, and risk-free simulation for the next generation of global investors.
+            </p>
+            
+            <div class="max-w-3xl mx-auto relative">
+                <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                    <i data-lucide="search" class="text-slate-500 w-5 h-5"></i>
+                </div>
+                <input type="text" 
+                    class="w-full bg-slate-900 border border-slate-700 py-4 pl-12 pr-32 rounded-2xl neon-border outline-none transition-all text-lg"
+                    placeholder="Enter Stock Ticker or Crypto Pair (e.g. BTC/USD, NVDA)...">
+                <button class="absolute right-2 top-2 bottom-2 bg-blue-600 hover:bg-blue-500 px-6 rounded-xl font-bold flex items-center gap-2 transition">
+                    Run AI <i data-lucide="sparkles" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+            <div class="lg:col-span-2 glass-card rounded-3xl p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Volatility Index</h3>
+                    <span class="text-xs font-mono text-blue-400">LIVE FEED</span>
+                </div>
+                <canvas id="marketChart" height="150"></canvas>
+            </div>
+
+            <div class="space-y-6">
+                <div class="glass-card rounded-3xl p-6 border-l-4 border-emerald-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-slate-400 uppercase font-bold">Top Gainer</p>
+                            <h4 class="text-2xl font-bold mt-1">NVIDIA Corp</h4>
+                        </div>
+                        <span class="bg-emerald-500/20 text-emerald-500 px-2 py-1 rounded text-xs font-bold">+4.2%</span>
+                    </div>
+                </div>
+                <div class="glass-card rounded-3xl p-6 border-l-4 border-blue-500">
+                    <p class="text-sm text-slate-400 uppercase font-bold">AI Sentiment</p>
+                    <h4 class="text-2xl font-bold mt-1">Strong Bullish</h4>
+                    <div class="w-full bg-slate-800 h-2 mt-4 rounded-full overflow-hidden">
+                        <div class="bg-blue-500 h-full w-[85%]"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Lucide ikonkalarni aktivlashtirish
+        lucide.createIcons();
+
+        // Grafikni chizish (Chart.js)
+        const ctx = document.getElementById('marketChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm'],
+                datasets: [{
+                    label: 'Market Momentum',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { display: false },
+                    x: { grid: { display: false }, border: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
