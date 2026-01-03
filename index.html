@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>FinMind AI Core v6.0 - Simulation Engine</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --bg: #050a18; --card: #0f172a; --accent: #00d2ff; --danger: #ff4d4d; --success: #00ff88; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        h2 { color: var(--accent); font-size: 18px; margin-top: 0; }
+        
+        /* Simulation Controls */
+        .control-group { margin-bottom: 20px; }
+        label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; }
+        input, select { width: 100%; background: #1e293b; border: 1px solid #334155; padding: 12px; border-radius: 10px; color: white; margin-bottom: 10px; }
+        
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background: linear-gradient(90deg, #00d2ff, #3a86ff); color: white; }
+        .btn-scenario { background: #334155; color: white; margin-top: 10px; font-size: 13px; }
+
+        /* Terminal Style */
+        .terminal { background: #000; border-radius: 15px; padding: 20px; font-family: 'Courier New', monospace; font-size: 13px; border: 1px solid #1e293b; min-height: 200px; overflow-y: auto; }
+        .term-cmd { color: var(--success); }
+        .term-warn { color: var(--danger); }
+        .term-info { color: var(--accent); }
+
+        .chart-container { height: 300px; margin-top: 20px; }
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-left: 10px; }
+        .badge-danger { background: rgba(255, 77, 77, 0.2); color: var(--danger); }
+    </style>
+</head>
+<body>
+
+<div class="grid">
+    <div class="card">
+        <h2>⚙️ MOLIYAVIY DVIGATEL</h2>
+        
+        <div class="control-group">
+            <label>Joriy Kassa ($)</label>
+            <input type="number" id="cash" value="40000">
+            
+            <label>Oylik Daromad ($)</label>
+            <input type="number" id="revenue" value="12000">
+            
+            <label>Oylik Xarajat ($)</label>
+            <input type="number" id="expense" value="8000">
+        </div>
+
+        <hr style="opacity: 0.1; margin: 20px 0;">
+        
+        <h2>🎭 SSENARIYNI TANLANGLING</h2>
+        <button class="btn btn-scenario" onclick="runSimulation('normal')">Standard Holat (Hozirgi)</button>
+        <button class="btn btn-scenario" onclick="runSimulation('crisis')">📉 Krizis (Daromad -40%)</button>
+        <button class="btn btn-scenario" onclick="runSimulation('scale')">🚀 O'sish (Marketing +$2k)</button>
+        <button class="btn btn-scenario" onclick="runSimulation('hire')">👥 Xodim yollash (+$3k/oy)</button>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>📊 6 OYLIK PROGNOZ</h2>
+            <div id="status-badge"></div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="forecastChart"></canvas>
+        </div>
+
+        <h2 style="margin-top: 30px;">🤖 AI ACTION PLAN (BUYRUQLAR)</h2>
+        <div class="terminal" id="aiTerminal">
+            > Tizim tayyor...<br>
+            > Ssenariyni tanlang va tahlilni boshlang.
+        </div>
+    </div>
+</div>
+
+<script>
+    let myChart;
+    const term = document.getElementById('aiTerminal');
+
+    function log(msg, type='info') {
+        const span = document.createElement('div');
+        span.className = `term-${type}`;
+        span.innerHTML = `> ${msg}`;
+        term.appendChild(span);
+        term.scrollTop = term.scrollHeight;
+    }
+
+    function runSimulation(type) {
+        let cash = parseFloat(document.getElementById('cash').value);
+        let rev = parseFloat(document.getElementById('revenue').value);
+        let exp = parseFloat(document.getElementById('expense').value);
+        
+        term.innerHTML = ''; // Clear terminal
+        let months = ['Hozir', '1-oy', '2-oy', '3-oy', '4-oy', '5-oy', '6-oy'];
+        let data = [cash];
+        let currentStatus = "SOG'LOM";
+
+        if(type === 'crisis') {
+            log("KRIZIS REŽIMI FAOL", "warn");
+            rev = rev * 0.6;
+            log(`Daromad 40% ga qisqardi: $${rev.toFixed(0)}`, "warn");
+            log("Tavsiya: Ofis xarajatlarini 20% ga kamaytirish shart.", "info");
+        } else if(type === 'scale') {
+            log("O'SISH REŽIMI: Marketing xarajatlari oshirildi", "info");
+            exp += 2000;
+            rev = rev * 1.5; // High growth expectation
+            log("LTV/CAC nisbati: 4.2x (A'lo)", "cmd");
+        } else if(type === 'hire') {
+            log("STRATEGIYA: Yangi xodimlarni adaptatsiyasi", "info");
+            exp += 3000;
+            log("Qisqa muddatli foyda kamayishi kuzatiladi", "warn");
+        }
+
+        // Simulating 6 months
+        for(let i=1; i<=6; i++) {
+            cash = cash + (rev - exp);
+            data.push(cash);
+            if(cash < 0) currentStatus = "XAVFLI";
+        }
+
+        updateChart(months, data);
+        
+        // AI Logic
+        if(cash < 0) {
+            log("DIQQAT: 90 kundan keyin kassa bo'shab qoladi!", "warn");
+            log("COMMAND: Burn rate-ni $1,200 ga kamaytiring!", "cmd");
+        } else {
+            log(`Bashorat: 6 oydan keyin qoldiq: $${cash.toLocaleString()}`, "cmd");
+            log("XULOSA: Biznes barqaror. Zaxiraning bir qismini reklamaga yo'naltiring.", "info");
+        }
+    }
+
+    function updateChart(labels, data) {
+        const ctx = document.getElementById('forecastChart').getContext('2d');
+        if(myChart) myChart.destroy();
+        
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Kassa qoldigʻi ($)',
+                    data: data,
+                    borderColor: data[data.length-1] < 0 ? '#ff4d4d' : '#00d2ff',
+                    borderWidth: 3,
+                    fill: true,
+                    backgroundColor: 'rgba(0, 210, 255, 0.05)',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { grid: { color: '#1e293b' } }, x: { grid: { display: false } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+    window.onload = () => runSimulation('normal');
+</script>
+
+</body>
+</html>
